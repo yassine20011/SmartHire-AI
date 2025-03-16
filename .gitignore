@@ -1,23 +1,29 @@
-# environment
+# Dependencies and AdonisJS build
+node_modules
+build
+tmp
+
+# Secrets
 .env
-env/
+.env.local
+.env.production.local
+.env.development.local
 
-# django
-*.log
-*.pot
-*.pyc
-__pycache__/
-local_settings.py
-db.sqlite3
-media/
-static/
+# Frontend assets compiled code
+public/assets
 
-# vscode
-.vscode/
+# Build tools specific
+npm-debug.log
+yarn-error.log
 
-# python
-*.pyc
-*.pyo
-*.pyd
-__pycache__/
+# Editors specific
+.fleet
+.idea
+.vscode
 
+# Platform specific
+.DS_Store
+
+
+diagrams
+env
