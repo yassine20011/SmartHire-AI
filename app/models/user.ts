@@ -1,20 +1,24 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
-import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
-import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
+import { column, beforeSave, BaseModel, hasOne, hasMany } from '@adonisjs/lucid/orm'
+import type { HasOne, HasMany } from '@adonisjs/lucid/types/relations'
+import Recruiter from '#models/recruiter'
+import SearchLog from '#models/search_log'
+import Notification from '#models/notification'
+import Candidate from '#models/candidate'
 
-const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
-  uids: ['email'],
-  passwordColumnName: 'password',
-})
-
-export default class User extends compose(BaseModel, AuthFinder) {
+export default class User extends BaseModel {
+  /**
+   * Attributes.
+   */
   @column({ isPrimary: true })
-  declare id: number
+  declare userId: number
 
   @column()
-  declare fullName: string | null
+  declare firstName: string
+
+  @column()
+  declare lastName: string
 
   @column()
   declare email: string
@@ -22,9 +26,42 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column({ serializeAs: null })
   declare password: string
 
+  @column()
+  declare role: 'Recruiter' | 'Candidate'
+
+  /**
+   * Relationships.
+   */
+  @hasOne(() => Recruiter, { foreignKey: 'userId' })
+  declare recruiter: HasOne<typeof Recruiter>
+
+  @hasOne(() => Candidate, { foreignKey: 'userId' })
+  declare candidate: HasOne<typeof Candidate>
+
+  @hasMany(() => SearchLog, { foreignKey: 'userId' })
+  declare searchLogs: HasMany<typeof SearchLog>
+
+  @hasMany(() => Notification, { foreignKey: 'userId' })
+  declare notifications: HasMany<typeof Notification>
+
+  /**
+   * Timestamps.
+   */
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+
+  @beforeSave()
+  static async hashPassword(user: User) {
+    if (user.$dirty.password) {
+      user.password = await hash.make(user.password)
+    }
+  }
+
+  getFullName(): string {
+    return `${this.firstName} ${this.lastName}`
+  }
+
 }
