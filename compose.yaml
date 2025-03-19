@@ -4,7 +4,7 @@ services:
     image: postgres:17.2
     environment:
       POSTGRES_USER: smarthire
-      POSTGRES_PASSWORD: smarthire
+      POSTGRES_PASSWORD: smarthire1234
       POSTGRES_DB: smarthire
     volumes:
       - smart_hire_postgres_data:/var/lib/postgresql/data
@@ -38,10 +38,10 @@ services:
     networks:
       - smart_hire_network
 
-
 volumes:
   smart_hire_postgres_data:
   smart_hire_minio_data:
+
 
 networks:
   smart_hire_network:
