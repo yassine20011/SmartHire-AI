@@ -4,6 +4,8 @@ import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Job from './job.js'
 import Candidate from './candidate.js'
 
+type ApplicationStatus = 'Pending' | 'Accepted' | 'Rejected'
+
 export default class Application extends BaseModel {
   /**
    * Attributes.
@@ -13,7 +15,7 @@ export default class Application extends BaseModel {
   declare applicationId: number
 
   @column()
-  declare status: string
+  declare status: ApplicationStatus
 
   @column()
   declare score: number

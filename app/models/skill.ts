@@ -9,7 +9,7 @@ export default class Skill extends BaseModel {
    */
 
   @column({ isPrimary: true })
-  declare id: number
+  declare skillId: number
 
   @column()
   declare name: string

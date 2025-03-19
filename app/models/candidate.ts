@@ -5,12 +5,19 @@ import AiMatching from '#models/ai_matching'
 import Application from '#models/application'
 import Skill from '#models/skill'
 
+
+interface DesiredPosition {
+  title: string
+  location: string
+  salaryRange: string
+}
+
 export default class Candidate extends BaseModel {
   /**
    * Attributes.
    */
   @column({ isPrimary: true })
-  declare conddidateId: number
+  declare candidateId: number
 
   @column()
   declare resume_url: string
@@ -19,7 +26,7 @@ export default class Candidate extends BaseModel {
   declare experience_years: number
 
   @column()
-  declare desired_position: object
+  declare desired_position: DesiredPosition
 
   @column()
   declare profile_visibility: boolean

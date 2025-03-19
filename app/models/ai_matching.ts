@@ -4,6 +4,13 @@ import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Job from '#models/job'
 import Candidate from '#models/candidate'
 
+interface RecommendationDetails {
+  jobId: number
+  jobTitle: string
+  company: string
+  location: string
+}
+
 export default class AiMatching extends BaseModel {
   /**
    * Attributes.
@@ -15,7 +22,7 @@ export default class AiMatching extends BaseModel {
   declare matchingScore: number
 
   @column()
-  declare recommendation_details: object
+  declare recommendation_details: RecommendationDetails
 
   /**
    * Relationships.
