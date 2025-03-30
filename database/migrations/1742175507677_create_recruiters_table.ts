@@ -5,12 +5,12 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('recruiterId').notNullable()
-      table.string('companyName', 80).notNullable()
-      table.integer('jobPostedCount').notNullable()
-      table.integer('companySize').notNullable()
-      table.string('industry', 80).notNullable()
-      table.integer('userId').unsigned().references('users.userId').onDelete('CASCADE')
+      table.increments('recruiter_id').notNullable()
+      table.string('company_name', 80).notNullable()
+      table.integer('job_posted_count')
+      table.integer('company_size')
+      table.string('industry', 80)
+      table.integer('user_id').unsigned().references('users.user_id').onDelete('CASCADE')
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

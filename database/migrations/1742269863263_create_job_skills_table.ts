@@ -5,9 +5,9 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.integer('jobId').unsigned().references('jobs.jobId').onDelete('CASCADE')
-      table.integer('skillId').unsigned().references('skills.skillId').onDelete('CASCADE')
-      table.primary(['jobId', 'skillId'])
+      table.integer('job_id').unsigned().references('jobs.job_id').onDelete('CASCADE')
+      table.integer('skill_id').unsigned().references('skills.skill_id').onDelete('CASCADE')
+      table.primary(['job_id', 'skill_id'])
     })
   }
 

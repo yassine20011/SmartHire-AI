@@ -5,15 +5,15 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('macthingId').notNullable()
-      table.float('matchingScore').notNullable()
+      table.increments('macthing_id').notNullable()
+      table.float('matching_score').notNullable()
       table.json('recommendation_details').notNullable()
 
-      table.integer('jobId').unsigned().references('jobs.jobId').onDelete('CASCADE')
+      table.integer('job_id').unsigned().references('jobs.job_id').onDelete('CASCADE')
       table
-        .integer('candidateId')
+        .integer('candidate_id')
         .unsigned()
-        .references('candidates.candidateId')
+        .references('candidates.candidate_id')
         .onDelete('CASCADE')
 
       table.timestamp('created_at')
