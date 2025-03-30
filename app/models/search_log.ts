@@ -4,35 +4,34 @@ import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import User from '#models/user'
 
 interface ClickedJob {
-  jobId: number
-  jobTitle: string
+  job_id: number
+  job_title: string
   company: string
   location: string
 }
 
 export default class SearchLog extends BaseModel {
   /**
-   *  Attributes.
-   * */
+   * Attributes.
+   */
   @column({ isPrimary: true })
-  declare searchLogId: number
+  declare search_log_id: number
 
   @column()
-  declare searchQuery: string
+  declare search_query: string
 
   @column()
-  declare clickedJob: ClickedJob
+  declare clicked_job: ClickedJob
 
   /**
    * Relationships.
    */
-  @belongsTo(() => User, { foreignKey: 'userId' })
+  @belongsTo(() => User, { foreignKey: 'user_id' })
   declare user: BelongsTo<typeof User>
 
   /**
-   *
    * Timestamps.
-   * */
+   */
   @column.dateTime({ autoCreate: true })
   declare timestamp: DateTime
 }

@@ -7,9 +7,8 @@ export default class Skill extends BaseModel {
   /**
    * Attributes.
    */
-
   @column({ isPrimary: true })
-  declare skillId: number
+  declare skill_id: number
 
   @column()
   declare name: string
@@ -20,10 +19,10 @@ export default class Skill extends BaseModel {
   /**
    * Relationships.
    */
-  @belongsTo(() => Job, { foreignKey: 'jobId' })
+  @belongsTo(() => Job, { foreignKey: 'job_id' })
   declare job: BelongsTo<typeof Job>
 
-  @belongsTo(() => Candidate, { foreignKey: 'candidateId' })
+  @belongsTo(() => Candidate, { foreignKey: 'candidate_id' })
   declare candidate: BelongsTo<typeof Candidate>
 
   @manyToMany(() => Candidate, {
@@ -35,7 +34,6 @@ export default class Skill extends BaseModel {
     pivotTable: 'job_skills',
   })
   declare jobs: ManyToMany<typeof Job>
-
 
   get_related_jobs(): void {
     console.log('Related jobs')

@@ -5,11 +5,10 @@ import AiMatching from '#models/ai_matching'
 import Application from '#models/application'
 import Skill from '#models/skill'
 
-
 interface DesiredPosition {
   title: string
   location: string
-  salaryRange: string
+  salary_range: string
 }
 
 export default class Candidate extends BaseModel {
@@ -17,7 +16,7 @@ export default class Candidate extends BaseModel {
    * Attributes.
    */
   @column({ isPrimary: true })
-  declare candidateId: number
+  declare candidate_id: number
 
   @column()
   declare resume_url: string
@@ -31,16 +30,19 @@ export default class Candidate extends BaseModel {
   @column()
   declare profile_visibility: boolean
 
+  @column()
+  declare user_id: number
+
   /**
    * Relationships.
    */
-  @belongsTo(() => User, { foreignKey: 'userId' })
+  @belongsTo(() => User, { foreignKey: 'user_id' })
   declare user: BelongsTo<typeof User>
 
-  @hasMany(() => AiMatching, { foreignKey: 'candidateId' })
+  @hasMany(() => AiMatching, { foreignKey: 'candidate_id' })
   declare matches: HasMany<typeof AiMatching>
 
-  @hasMany(() => Application, { foreignKey: 'candidateId' })
+  @hasMany(() => Application, { foreignKey: 'candidate_id' })
   declare applications: HasMany<typeof Application>
 
   @manyToMany(() => Skill, { pivotTable: 'candidate_skills' })

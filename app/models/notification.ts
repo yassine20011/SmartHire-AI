@@ -8,7 +8,7 @@ export default class Notification extends BaseModel {
    * Attributes.
    */
   @column({ isPrimary: true })
-  declare notificationId: number
+  declare notification_id: number
 
   @column()
   declare message: string
@@ -19,15 +19,14 @@ export default class Notification extends BaseModel {
   /**
    * Relationships.
    */
-  @belongsTo(() => User, { foreignKey: 'userId' })
+  @belongsTo(() => User, { foreignKey: 'user_id' })
   declare user: BelongsTo<typeof User>
 
   /**
    * Timestamps.
    */
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
-
+  declare created_at: DateTime
 
   markAsRead() {}
 }

@@ -12,13 +12,13 @@ export default class User extends BaseModel {
    * Attributes.
    */
   @column({ isPrimary: true })
-  declare userId: number
+  declare user_id: number
 
   @column()
-  declare firstName: string
+  declare first_name: string
 
   @column()
-  declare lastName: string
+  declare last_name: string
 
   @column()
   declare email: string
@@ -27,31 +27,31 @@ export default class User extends BaseModel {
   declare password: string
 
   @column()
-  declare role: 'Recruiter' | 'Candidate'
+  declare role: 'recruiter' | 'candidate'
 
   /**
    * Relationships.
    */
-  @hasOne(() => Recruiter, { foreignKey: 'userId' })
+  @hasOne(() => Recruiter, { foreignKey: 'user_id' })
   declare recruiter: HasOne<typeof Recruiter>
 
-  @hasOne(() => Candidate, { foreignKey: 'userId' })
+  @hasOne(() => Candidate, { foreignKey: 'user_id' })
   declare candidate: HasOne<typeof Candidate>
 
-  @hasMany(() => SearchLog, { foreignKey: 'userId' })
-  declare searchLogs: HasMany<typeof SearchLog>
+  @hasMany(() => SearchLog, { foreignKey: 'user_id' })
+  declare search_logs: HasMany<typeof SearchLog>
 
-  @hasMany(() => Notification, { foreignKey: 'userId' })
+  @hasMany(() => Notification, { foreignKey: 'user_id' })
   declare notifications: HasMany<typeof Notification>
 
   /**
    * Timestamps.
    */
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare created_at: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updated_at: DateTime | null
 
   @beforeSave()
   static async hashPassword(user: User) {
@@ -61,7 +61,6 @@ export default class User extends BaseModel {
   }
 
   getFullName(): string {
-    return `${this.firstName} ${this.lastName}`
+    return `${this.first_name} ${this.last_name}`
   }
-
 }

@@ -10,9 +10,8 @@ export default class Application extends BaseModel {
   /**
    * Attributes.
    */
-
   @column({ isPrimary: true })
-  declare applicationId: number
+  declare application_id: number
 
   @column()
   declare status: ApplicationStatus
@@ -21,26 +20,25 @@ export default class Application extends BaseModel {
   declare score: number
 
   @column()
-  declare conver_letter: string
+  declare cover_letter: string
 
   /**
    * Relationships.
    */
-
-  @belongsTo(() => Job, { foreignKey: 'jobId' })
+  @belongsTo(() => Job, { foreignKey: 'job_id' })
   declare job: BelongsTo<typeof Job>
 
-  @belongsTo(() => Candidate, { foreignKey: 'candidateId' })
+  @belongsTo(() => Candidate, { foreignKey: 'candidate_id' })
   declare candidate: BelongsTo<typeof Candidate>
 
   /**
    * Timestamps.
    */
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare created_at: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime
+  declare updated_at: DateTime
 
   update_status(): void {
     console.log('Application status updated')

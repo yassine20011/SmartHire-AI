@@ -12,7 +12,7 @@ export default class Job extends BaseModel {
    */
 
   @column({ isPrimary: true })
-  declare jobId: number
+  declare job_id: number
 
   @column()
   declare title: string
@@ -21,31 +21,31 @@ export default class Job extends BaseModel {
   declare description: string
 
   @column()
-  declare requiredSkills: object
+  declare required_skills: object
 
   @column()
   declare location: string
 
   @column()
-  declare salaryRange: string
+  declare salary_range: string
 
   @column()
-  declare jobType: string
+  declare job_type: string
 
   @column()
-  declare employmentType: string
+  declare employment_type: string
 
   /**
    * Relationships.
    * */
 
-  @belongsTo(() => Recruiter, { foreignKey: 'recruiterId' })
+  @belongsTo(() => Recruiter, { foreignKey: 'recruiter_id' })
   declare recruiter: BelongsTo<typeof Recruiter>
 
-  @hasMany(() => Application, { foreignKey: 'jobId' })
+  @hasMany(() => Application, { foreignKey: 'job_id' })
   declare applications: HasMany<typeof Application>
 
-  @hasMany(() => AiMatching, { foreignKey: 'jobId' })
+  @hasMany(() => AiMatching, { foreignKey: 'job_id' })
   declare matches: HasMany<typeof AiMatching>
 
   @manyToMany(() => Skill, {
@@ -57,10 +57,10 @@ export default class Job extends BaseModel {
    * Timestamps.
    * */
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare created_at: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime
+  declare updated_at: DateTime
 
   updatePost(): void {
     console.log('Job updated')

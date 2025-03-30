@@ -5,8 +5,8 @@ import Job from '#models/job'
 import Candidate from '#models/candidate'
 
 interface RecommendationDetails {
-  jobId: number
-  jobTitle: string
+  job_id: number
+  job_title: string
   company: string
   location: string
 }
@@ -16,10 +16,10 @@ export default class AiMatching extends BaseModel {
    * Attributes.
    */
   @column({ isPrimary: true })
-  declare macthingId: number
+  declare matching_id: number
 
   @column()
-  declare matchingScore: number
+  declare matching_score: number
 
   @column()
   declare recommendation_details: RecommendationDetails
@@ -27,19 +27,18 @@ export default class AiMatching extends BaseModel {
   /**
    * Relationships.
    */
-  @belongsTo(() => Job, { foreignKey: 'jobId' })
+  @belongsTo(() => Job, { foreignKey: 'job_id' })
   declare job: BelongsTo<typeof Job>
 
-  @belongsTo(() => Candidate, { foreignKey: 'candidateId' })
+  @belongsTo(() => Candidate, { foreignKey: 'candidate_id' })
   declare candidate: BelongsTo<typeof Candidate>
 
   /**
-   *
    * Timestamps.
-   **/
+   */
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare created_at: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime
+  declare updated_at: DateTime
 }

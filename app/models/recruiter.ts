@@ -5,30 +5,33 @@ import User from '#models/user'
 
 export default class Recruiter extends BaseModel {
   /**
-  * Attributes.
-  **/
+   * Attributes.
+   */
   @column({ isPrimary: true })
-  declare recruiterId: number
+  declare recruiter_id: number
 
   @column()
-  declare companyName: string
+  declare company_name: string
 
   @column()
-  declare jobPostedCount: number
+  declare job_posted_count: number
 
   @column()
-  declare companySize: number
+  declare company_size: number
 
   @column()
   declare industry: string
 
+  @column()
+  declare user_id: number
+
   /**
    * Relationships.
    */
-  @belongsTo(() => User, { foreignKey: 'userId' })
+  @belongsTo(() => User, { foreignKey: 'user_id' })
   declare user: BelongsTo<typeof User>
 
-  @hasMany(() => Job, { foreignKey: 'recruiterId' })
+  @hasMany(() => Job, { foreignKey: 'recruiter_id' })
   declare jobs: HasMany<typeof Job>
 
   postJobs() {}
