@@ -1,8 +1,7 @@
 "use client"
 
 import type React from "react"
-
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card"
 import { Input } from "~/components/ui/input"
@@ -10,9 +9,9 @@ import { Label } from "~/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import { Checkbox } from "~/components/ui/checkbox"
 import { ArrowLeft, Github, Linkedin } from "lucide-react"
-import { Link, router, usePage } from '@inertiajs/react'
+import { Link, useForm, router } from '@inertiajs/react'
 import { z } from "zod"
-
+import { usePage } from "@inertiajs/react"
 
 type FormField = {
   id: string
@@ -20,15 +19,6 @@ type FormField = {
   type: string
   placeholder: string
 }
-
-type renderFormTyepe = {
-  fields: FormField[]
-  formState: Record<string, string | boolean>
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  errors: Record<string, string>
-}
-
-
 
 // Form validation schemas
 const candidateSchema = z.object({
@@ -46,7 +36,7 @@ const recruiterSchema = z.object({
   lastName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
   email: z.string().email("Email invalide"),
   password: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères"),
-  company: z.string().min(2, "Le nom de l'entreprise est requis"),
+  companyName: z.string().min(2, "Le nom de l'entreprise est requis"),
   terms: z.literal(true, {
     errorMap: () => ({ message: "Vous devez accepter les conditions d'utilisation" }),
   }),
@@ -63,7 +53,7 @@ const recruiterFields = [
   { id: "firstName", label: "Prénom", type: "text", placeholder: "Prénom" },
   { id: "lastName", label: "Nom", type: "text", placeholder: "Nom" },
   { id: "email", label: "Email", type: "email", placeholder: "nom@entreprise.com" },
-  { id: "company", label: "Entreprise", type: "text", placeholder: "Nom de l'entreprise" },
+  { id: "companyName", label: "Entreprise", type: "text", placeholder: "Nom de l'entreprise" },
   { id: "password", label: "Mot de passe", type: "password", placeholder: "••••••••" },
 ]
 
@@ -74,7 +64,7 @@ function renderForm(
   errors: Record<string, string>
 ) {
 
-  return fields.map(({ id, label, type, placeholder }: FormField ) => (
+  return fields.map(({ id, label, type, placeholder }: FormField) => (
     <div key={id} className="space-y-2">
       <Label htmlFor={id}>{label}</Label>
       <Input
@@ -84,56 +74,68 @@ function renderForm(
         placeholder={placeholder}
         value={formState[id] as string}
         onChange={handleChange}
+        autoComplete="on"
       />
       {errors[id] && <p className="text-xs text-destructive">{errors[id]}</p>}
     </div>
   ))
 }
 
-export default function SignupPage() {
-  const { role } = usePage().props as { role?: string }
-  const [activeTab, setActiveTab] = useState("candidate")
+export default function SignupPage({ error }: { error: string }) {
+  const { type } = usePage().props
+
+  const [activeTab, setActiveTab] = useState<string>((type as string) || "candidate")
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  // Form states
-  const [candidateForm, setCandidateForm] = useState({
+  const candidateForm = useForm<{
+    firstName: string
+    lastName: string
+    email: string
+    password: string
+    terms: boolean
+    role: string
+  }>({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
     terms: false,
+    role: "candidate",
   })
 
-  const [recruiterForm, setRecruiterForm] = useState({
+  const recruiterForm = useForm<{
+    firstName: string
+    lastName: string
+    email: string
+    password: string
+    companyName: string
+    terms: boolean
+    role: string
+  }>({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    company: "",
+    companyName: "",
     terms: false,
+    role: "recruiter",
   })
 
-  // Set active tab based on URL parameter
-  useEffect(() => {
-    if (role === "candidate" || role === "recruiter") {
-      setActiveTab(role)
-    }
-  }, [role])
 
   const handleCandidateSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
     try {
-      candidateSchema.parse(candidateForm)
-      // Form is valid, proceed with submission
-      console.log("Candidate form submitted:", candidateForm)
-      router.post("/sign", {
-        data: {
-          ...candidateForm,
-          role: "Candidate",
+      candidateSchema.parse(candidateForm.data)
+      candidateForm.post("/signup", {
+        onSuccess: () => {
+          console.log("Candidate form submitted successfully")
+        },
+        onError: (e) => {
+          console.log("Candidate form submission failed")
+          console.log(e)
         },
       })
-
     } catch (error) {
       if (error instanceof z.ZodError) {
         const formattedErrors: Record<string, string> = {}
@@ -149,19 +151,21 @@ export default function SignupPage() {
 
   const handleRecruiterSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    console.log(recruiterForm.data)
 
     try {
-      recruiterSchema.parse(recruiterForm)
-      // Form is valid, proceed with submission
-      console.log("Recruiter form submitted:", recruiterForm)
-      router.post("/sign", {
-        data: {
-          ...recruiterForm,
-          role: "Recruiter",
+      recruiterSchema.parse(recruiterForm.data)
+      recruiterForm.post("/signup", {
+        onSuccess: () => {
+          console.log("Recruiter form submitted successfully")
         },
+        onError: (e) => {
+          console.log("Recruiter form submission failed")
+          console.log(e)
+        }
       })
-
     } catch (error) {
+      console.log("Recruiter form submission error", error)
       if (error instanceof z.ZodError) {
         const formattedErrors: Record<string, string> = {}
         error.errors.forEach((err) => {
@@ -175,11 +179,16 @@ export default function SignupPage() {
   }
 
   const handleCandidateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target
-    setCandidateForm({
-      ...candidateForm,
-      [name]: type === "checkbox" ? checked : value,
-    })
+    type t = keyof typeof candidateForm.data
+
+    const { name, value } = e.target as HTMLInputElement & {
+      name: t
+      value: string
+      type: string
+      checked: boolean
+    }
+
+    candidateForm.setData(name, value)
 
     // Clear error when field is edited
     if (errors[name]) {
@@ -191,11 +200,17 @@ export default function SignupPage() {
   }
 
   const handleRecruiterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target
-    setRecruiterForm({
-      ...recruiterForm,
-      [name]: type === "checkbox" ? checked : value,
-    })
+
+    type t = keyof typeof candidateForm.data
+
+    const { name, value } = e.target as HTMLInputElement & {
+      name: t
+      value: string
+      type: string
+      checked: boolean
+    }
+
+    recruiterForm.setData(name, value)
 
     // Clear error when field is edited
     if (errors[name]) {
@@ -219,12 +234,24 @@ export default function SignupPage() {
         <div className="flex flex-col space-y-2 text-center">
           <h1 className="text-2xl font-semibold tracking-tight">Créer un compte</h1>
           <p className="text-sm text-muted-foreground">Inscrivez-vous pour accéder à SmartHire AI</p>
+          {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs value={activeTab} onValueChange={(value) => {
+          setActiveTab(value);
+          router.get('/signup', { type: value }, {
+            preserveState: true,
+            preserveScroll: true,
+            only: []
+          });
+        }} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="candidate">Candidat</TabsTrigger>
-            <TabsTrigger value="recruiter">Recruteur</TabsTrigger>
+            <TabsTrigger value="candidate">
+              Candidat
+            </TabsTrigger>
+            <TabsTrigger value="recruiter">
+              Recruteur
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="candidate">
@@ -236,19 +263,16 @@ export default function SignupPage() {
               <CardContent className="space-y-4">
                 <form onSubmit={handleCandidateSubmit} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    {renderForm(candidateFields.slice(0, 2), candidateForm, handleCandidateChange, errors)}
+                    {renderForm(candidateFields.slice(0, 2), candidateForm.data, handleCandidateChange, errors)}
                   </div>
-                  {renderForm(candidateFields.slice(2), candidateForm, handleCandidateChange, errors)}
+                  {renderForm(candidateFields.slice(2), candidateForm.data, handleCandidateChange, errors)}
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="terms"
                       name="terms"
-                      checked={candidateForm.terms}
+                      checked={candidateForm.data.terms}
                       onCheckedChange={(checked) => {
-                        setCandidateForm({
-                          ...candidateForm,
-                          terms: checked === true,
-                        })
+                        candidateForm.setData("terms", checked === true)
                         if (errors.terms) {
                           setErrors({
                             ...errors,
@@ -278,6 +302,7 @@ export default function SignupPage() {
                   <div className="relative flex justify-center text-xs uppercase">
                     <span className="bg-background px-2 text-muted-foreground">Ou continuer avec</span>
                   </div>
+
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -311,19 +336,16 @@ export default function SignupPage() {
               <CardContent className="space-y-4">
                 <form onSubmit={handleRecruiterSubmit} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    {renderForm(recruiterFields.slice(0, 2), recruiterForm, handleRecruiterChange, errors)}
+                    {renderForm(recruiterFields.slice(0, 2), recruiterForm.data, handleRecruiterChange, errors)}
                   </div>
-                  {renderForm(recruiterFields.slice(2), recruiterForm, handleRecruiterChange, errors)}
+                  {renderForm(recruiterFields.slice(2), recruiterForm.data, handleRecruiterChange, errors)}
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="r-terms"
                       name="terms"
-                      checked={recruiterForm.terms}
+                      checked={recruiterForm.data.terms}
                       onCheckedChange={(checked) => {
-                        setRecruiterForm({
-                          ...recruiterForm,
-                          terms: checked === true,
-                        })
+                        recruiterForm.setData("terms", checked === true)
                         if (errors.terms) {
                           setErrors({
                             ...errors,
