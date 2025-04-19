@@ -1,18 +1,20 @@
 import { UserService } from '#services/user_service'
 import type { HttpContext } from '@adonisjs/core/http'
-
+import vine from '@vinejs/vine'
 
 export default class LoginController {
-
   async show({ inertia }: HttpContext) {
     return inertia.render('auth/login')
   }
 
-
   async handle({ auth, request, response, session }: HttpContext) {
-    const email = request.input('email')
-    const password = request.input('password')
-    const nextPath = request.input('next')
+    const schema = vine.object({
+      email: vine.string().email().trim().normalizeEmail(),
+      password: vine.string().minLength(8),
+      nextPath: vine.string().optional(),
+    })
+
+    const { email, password, nextPath } = await request.validateUsing(vine.compile(schema))
 
     try {
       const user = await UserService.verifyCredentials(email, password)
@@ -38,6 +40,4 @@ export default class LoginController {
       return response.redirect().toPath(redirectPath)
     }
   }
-
-
 }
