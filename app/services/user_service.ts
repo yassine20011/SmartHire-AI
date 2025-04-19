@@ -11,7 +11,6 @@ export class UserService {
       }
     }
     catch (error) {
-      console.error('Error verifying credentials:', error)
       throw new Error('Error verifying credentials')
     }
     return null
@@ -22,8 +21,7 @@ export class UserService {
       const user = await User.query().where('email', email).first()
       return user
     } catch (error) {
-      console.error('Error finding user by email:', error)
-      throw new Error('Error finding user by email')
+      throw new Error(error.message)
     }
   }
 
@@ -32,7 +30,6 @@ export class UserService {
       const user = await User.create(userData)
       return user
     } catch (error) {
-      console.error('Error creating user:', error)
       throw new Error('Error creating user')
     }
   }
