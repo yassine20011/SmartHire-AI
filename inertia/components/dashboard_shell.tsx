@@ -1,6 +1,6 @@
 import type React from "react"
 import { cn } from "~/lib/utils"
-import { Link } from "lucide-react"
+import { Link } from "@inertiajs/react"
 
 interface DashboardShellProps {
   children: React.ReactNode
