@@ -1,37 +1,39 @@
-import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
+import { column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Job from '#models/job'
 import User from '#models/user'
+import BaseModelWithCamelCase from './baseModel.js'
 
-export default class Recruiter extends BaseModel {
+export default class Recruiter extends BaseModelWithCamelCase {
+
   /**
    * Attributes.
    */
   @column({ isPrimary: true })
-  declare recruiter_id: number
+  declare recruiterId: number
 
   @column()
-  declare company_name: string
+  declare companyName: string
 
   @column()
-  declare job_posted_count: number
+  declare jobPostedCount: number
 
   @column()
-  declare company_size: number
+  declare companySize: number
 
   @column()
   declare industry: string
 
   @column()
-  declare user_id: number
+  declare userId: number
 
   /**
    * Relationships.
    */
-  @belongsTo(() => User, { foreignKey: 'user_id' })
+  @belongsTo(() => User, { foreignKey: 'userId' })
   declare user: BelongsTo<typeof User>
 
-  @hasMany(() => Job, { foreignKey: 'recruiter_id' })
+  @hasMany(() => Job, { foreignKey: 'recruiterId' })
   declare jobs: HasMany<typeof Job>
 
   postJobs() {}

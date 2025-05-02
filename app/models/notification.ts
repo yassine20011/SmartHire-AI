@@ -1,32 +1,33 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
+import { column, belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import User from '#models/user'
+import BaseModelWithCamelCase from './baseModel.js'
 
-export default class Notification extends BaseModel {
+export default class Notification extends BaseModelWithCamelCase {
   /**
    * Attributes.
    */
   @column({ isPrimary: true })
-  declare notification_id: number
+  declare notificationId: number
 
   @column()
   declare message: string
 
   @column()
-  declare read_status: boolean
+  declare readStatus: boolean
 
   /**
    * Relationships.
    */
-  @belongsTo(() => User, { foreignKey: 'user_id' })
+  @belongsTo(() => User, { foreignKey: 'userId' })
   declare user: BelongsTo<typeof User>
 
   /**
    * Timestamps.
    */
   @column.dateTime({ autoCreate: true })
-  declare created_at: DateTime
+  declare createdAt: DateTime
 
   markAsRead() {}
 }

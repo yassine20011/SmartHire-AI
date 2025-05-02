@@ -1,9 +1,10 @@
-import { BaseModel, column, belongsTo, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import { column, belongsTo, hasMany, manyToMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import User from '#models/user'
 import AiMatching from '#models/ai_matching'
 import Application from '#models/application'
 import Skill from '#models/skill'
+import BaseModelWithCamelCase from './baseModel.js'
 
 interface DesiredPosition {
   title: string
@@ -11,38 +12,40 @@ interface DesiredPosition {
   salary_range: string
 }
 
-export default class Candidate extends BaseModel {
+export default class Candidate extends BaseModelWithCamelCase {
+
+
   /**
    * Attributes.
    */
   @column({ isPrimary: true })
-  declare candidate_id: number
+  declare candidateId: number
 
   @column()
-  declare resume_url: string
+  declare resumeUrl: string
 
   @column()
-  declare experience_years: number
+  declare experienceYears: number
 
   @column()
-  declare desired_position: DesiredPosition
+  declare desiredPosition: DesiredPosition
 
   @column()
-  declare profile_visibility: boolean
+  declare profileVisibility: boolean
 
   @column()
-  declare user_id: number
+  declare userId: number
 
   /**
    * Relationships.
    */
-  @belongsTo(() => User, { foreignKey: 'user_id' })
+  @belongsTo(() => User, { foreignKey: 'userId' })
   declare user: BelongsTo<typeof User>
 
-  @hasMany(() => AiMatching, { foreignKey: 'candidate_id' })
+  @hasMany(() => AiMatching, { foreignKey: 'candidateId' })
   declare matches: HasMany<typeof AiMatching>
 
-  @hasMany(() => Application, { foreignKey: 'candidate_id' })
+  @hasMany(() => Application, { foreignKey: 'candidateId' })
   declare applications: HasMany<typeof Application>
 
   @manyToMany(() => Skill, { pivotTable: 'candidate_skills' })

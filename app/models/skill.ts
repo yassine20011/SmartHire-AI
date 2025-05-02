@@ -1,14 +1,15 @@
-import { BaseModel, column, belongsTo, manyToMany } from '@adonisjs/lucid/orm'
+import { column, belongsTo, manyToMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Job from '#models/job'
 import Candidate from '#models/candidate'
+import BaseModelWithCamelCase from './baseModel.js'
 
-export default class Skill extends BaseModel {
+export default class Skill extends BaseModelWithCamelCase {
   /**
    * Attributes.
    */
   @column({ isPrimary: true })
-  declare skill_id: number
+  declare skillId: number
 
   @column()
   declare name: string
@@ -19,10 +20,10 @@ export default class Skill extends BaseModel {
   /**
    * Relationships.
    */
-  @belongsTo(() => Job, { foreignKey: 'job_id' })
+  @belongsTo(() => Job, { foreignKey: 'jobId' })
   declare job: BelongsTo<typeof Job>
 
-  @belongsTo(() => Candidate, { foreignKey: 'candidate_id' })
+  @belongsTo(() => Candidate, { foreignKey: 'candidateId' })
   declare candidate: BelongsTo<typeof Candidate>
 
   @manyToMany(() => Candidate, {

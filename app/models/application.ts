@@ -1,17 +1,19 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
+import { column, belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Job from './job.js'
 import Candidate from './candidate.js'
+import BaseModelWithCamelCase from './baseModel.js'
 
 type ApplicationStatus = 'Pending' | 'Accepted' | 'Rejected'
 
-export default class Application extends BaseModel {
+export default class Application extends BaseModelWithCamelCase {
+
   /**
    * Attributes.
    */
   @column({ isPrimary: true })
-  declare application_id: number
+  declare applicationId: number
 
   @column()
   declare status: ApplicationStatus
@@ -20,25 +22,25 @@ export default class Application extends BaseModel {
   declare score: number
 
   @column()
-  declare cover_letter: string
+  declare coverLetter: string
 
   /**
    * Relationships.
    */
-  @belongsTo(() => Job, { foreignKey: 'job_id' })
+  @belongsTo(() => Job, { foreignKey: 'jobId' })
   declare job: BelongsTo<typeof Job>
 
-  @belongsTo(() => Candidate, { foreignKey: 'candidate_id' })
+  @belongsTo(() => Candidate, { foreignKey: 'candidateId' })
   declare candidate: BelongsTo<typeof Candidate>
 
   /**
    * Timestamps.
    */
   @column.dateTime({ autoCreate: true })
-  declare created_at: DateTime
+  declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updated_at: DateTime
+  declare updatedAt: DateTime
 
   update_status(): void {
     console.log('Application status updated')

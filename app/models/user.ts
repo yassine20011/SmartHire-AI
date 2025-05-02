@@ -1,24 +1,25 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
-import { column, beforeSave, BaseModel, hasOne, hasMany } from '@adonisjs/lucid/orm'
+import { column, beforeSave, hasOne, hasMany } from '@adonisjs/lucid/orm'
 import type { HasOne, HasMany } from '@adonisjs/lucid/types/relations'
 import Recruiter from '#models/recruiter'
 import SearchLog from '#models/search_log'
 import Notification from '#models/notification'
 import Candidate from '#models/candidate'
+import BaseModelWithCamelCase from './baseModel.js'
 
-export default class User extends BaseModel {
+export default class User extends BaseModelWithCamelCase {
   /**
    * Attributes.
    */
   @column({ isPrimary: true })
-  declare user_id: number
+  declare userId: number
 
   @column()
-  declare first_name: string
+  declare firstName: string
 
   @column()
-  declare last_name: string
+  declare lastName: string
 
   @column()
   declare email: string
@@ -32,26 +33,26 @@ export default class User extends BaseModel {
   /**
    * Relationships.
    */
-  @hasOne(() => Recruiter, { foreignKey: 'user_id' })
+  @hasOne(() => Recruiter, { foreignKey: 'userId' })
   declare recruiter: HasOne<typeof Recruiter>
 
-  @hasOne(() => Candidate, { foreignKey: 'user_id' })
+  @hasOne(() => Candidate, { foreignKey: 'userId' })
   declare candidate: HasOne<typeof Candidate>
 
-  @hasMany(() => SearchLog, { foreignKey: 'user_id' })
-  declare search_logs: HasMany<typeof SearchLog>
+  @hasMany(() => SearchLog, { foreignKey: 'userId' })
+  declare searchLogs: HasMany<typeof SearchLog>
 
-  @hasMany(() => Notification, { foreignKey: 'user_id' })
+  @hasMany(() => Notification, { foreignKey: 'userId' })
   declare notifications: HasMany<typeof Notification>
 
   /**
    * Timestamps.
    */
   @column.dateTime({ autoCreate: true })
-  declare created_at: DateTime
+  declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updated_at: DateTime | null
+  declare updatedAt: DateTime | null
 
   @beforeSave()
   static async hashPassword(user: User) {
@@ -61,6 +62,6 @@ export default class User extends BaseModel {
   }
 
   getFullName(): string {
-    return `${this.first_name} ${this.last_name}`
+    return `${this.firstName} ${this.lastName}`
   }
 }

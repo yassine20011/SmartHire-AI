@@ -1,18 +1,19 @@
-import { BaseModel, column, belongsTo, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import { column, belongsTo, hasMany, manyToMany } from '@adonisjs/lucid/orm'
 import Recruiter from '#models/recruiter'
 import AiMatching from './ai_matching.js'
 import Application from '#models/application'
 import Skill from './skill.js'
 import { DateTime } from 'luxon'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
+import BaseModelWithCamelCase from './baseModel.js'
 
-export default class Job extends BaseModel {
+export default class Job extends BaseModelWithCamelCase {
   /**
    * Attributes.
    */
 
   @column({ isPrimary: true })
-  declare job_id: number
+  declare jobId: number
 
   @column()
   declare title: string
@@ -21,31 +22,31 @@ export default class Job extends BaseModel {
   declare description: string
 
   @column()
-  declare required_skills: object
+  declare requiredSkills: object
 
   @column()
   declare location: string
 
   @column()
-  declare salary_range: string
+  declare salaryRange: string
 
   @column()
-  declare job_type: string
+  declare jobType: string
 
   @column()
-  declare employment_type: string
+  declare employmentType: string
 
   /**
    * Relationships.
    * */
 
-  @belongsTo(() => Recruiter, { foreignKey: 'recruiter_id' })
+  @belongsTo(() => Recruiter, { foreignKey: 'recruiterId' })
   declare recruiter: BelongsTo<typeof Recruiter>
 
-  @hasMany(() => Application, { foreignKey: 'job_id' })
+  @hasMany(() => Application, { foreignKey: 'jobId' })
   declare applications: HasMany<typeof Application>
 
-  @hasMany(() => AiMatching, { foreignKey: 'job_id' })
+  @hasMany(() => AiMatching, { foreignKey: 'jobId' })
   declare matches: HasMany<typeof AiMatching>
 
   @manyToMany(() => Skill, {
@@ -57,10 +58,10 @@ export default class Job extends BaseModel {
    * Timestamps.
    * */
   @column.dateTime({ autoCreate: true })
-  declare created_at: DateTime
+  declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updated_at: DateTime
+  declare updatedAt: DateTime
 
   updatePost(): void {
     console.log('Job updated')

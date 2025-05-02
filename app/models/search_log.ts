@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
+import { column, belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import User from '#models/user'
+import BaseModelWithCamelCase from './baseModel.js'
+
 
 interface ClickedJob {
   job_id: number
@@ -10,23 +12,24 @@ interface ClickedJob {
   location: string
 }
 
-export default class SearchLog extends BaseModel {
+export default class SearchLog extends BaseModelWithCamelCase {
+
   /**
    * Attributes.
    */
   @column({ isPrimary: true })
-  declare search_log_id: number
+  declare searchLogId: number
 
   @column()
-  declare search_query: string
+  declare searchQuery: string
 
   @column()
-  declare clicked_job: ClickedJob
+  declare clickedJob: ClickedJob
 
   /**
    * Relationships.
    */
-  @belongsTo(() => User, { foreignKey: 'user_id' })
+  @belongsTo(() => User, { foreignKey: 'userId' })
   declare user: BelongsTo<typeof User>
 
   /**
