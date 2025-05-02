@@ -11,7 +11,7 @@ export class UserService {
       }
     }
     catch (error) {
-      throw new Error('Error verifying credentials')
+      return null
     }
     return null
   }
@@ -21,7 +21,7 @@ export class UserService {
       const user = await User.query().where('email', email).first()
       return user
     } catch (error) {
-      throw new Error(error.message)
+      return null
     }
   }
 

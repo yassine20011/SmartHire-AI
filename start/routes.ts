@@ -1,7 +1,7 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 
-router.on('/home').renderInertia('home').use(middleware.guest())
+router.on('/').renderInertia('home').use(middleware.guest())
 
 const SignUpController = () => import('#controllers/auth/signup_controller')
 router.get('/signup', [SignUpController, 'show']).as('auth.signup.show').use(middleware.guest())

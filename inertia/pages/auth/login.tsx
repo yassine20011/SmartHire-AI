@@ -10,7 +10,9 @@ import { Label } from "~/components/ui/label"
 import { Checkbox } from "~/components/ui/checkbox"
 import { ArrowLeft, Github, Linkedin } from "lucide-react"
 import { z } from "zod"
-import { Link, router } from '@inertiajs/react'
+import { Link, router, usePage} from '@inertiajs/react'
+import { Error } from "~/components/ui/error"
+
 
 // Form validation schema
 const loginSchema = z.object({
@@ -19,6 +21,12 @@ const loginSchema = z.object({
 })
 
 export default function LoginPage() {
+
+
+  const p = usePage().props
+  console.log(p)
+
+
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [formData, setFormData] = useState({
     email: "",
@@ -136,6 +144,8 @@ export default function LoginPage() {
                   Se souvenir de moi
                 </Label>
               </div>
+
+              <Error errorKey="auth" />
 
               <Button type="submit" className="w-full">
                 Se connecter

@@ -45,8 +45,8 @@ export default class SignupController {
     }
 
     const user = await User.create({
-      first_name: playload.firstName,
-      last_name: playload.lastName,
+      firstName: playload.firstName,
+      lastName: playload.lastName,
       email: playload.email,
       password: playload.password,
       role: playload.role,
@@ -55,13 +55,11 @@ export default class SignupController {
     const role = playload.role.toLowerCase()
 
     if (role === 'candidate') {
-      const candidate = await user.related('candidate').create({})
-      candidate.user_id = user.user_id
+      await user.related('candidate').create({})
     } else if (role === 'recruiter') {
-      const recruiter = await user.related('recruiter').create({
-        company_name: playload.companyName,
+      await user.related('recruiter').create({
+        companyName: playload.companyName,
       })
-      recruiter.user_id = user.user_id
     } else {
       session.flash('error', 'Erreur lors de la création du compte')
       return response.redirect().back()

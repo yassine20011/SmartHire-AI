@@ -20,8 +20,13 @@ export default class LoginController {
       const user = await UserService.verifyCredentials(email, password)
 
       if (!user) {
-        session.flash('errors.auth', 'Invalid credentials')
-        return response.redirect().toPath('auth/sign_in')
+        session.flashMessages.set('errors', {
+          email: 'Invalid credentials',
+          password: 'Invalid credentials',
+        })
+        session.flash('flash', 'Invalid credentials')
+
+        return response.redirect().toPath('sign_in')
       }
 
       await auth.use('web').login(user)
@@ -32,12 +37,8 @@ export default class LoginController {
 
       return response.redirect().toPath('/')
     } catch {
-      session.flash('errors.auth', 'Invalid credentials')
-      let redirectPath = `/auth/sign_in`
-      if (nextPath) {
-        redirectPath += `?next=${nextPath}`
-      }
-      return response.redirect().toPath(redirectPath)
+      session.flash('flash', 'Invalid credentials')
+      return response.redirect().toPath('sign_in')
     }
   }
 }

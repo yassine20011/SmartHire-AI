@@ -12,6 +12,8 @@ export function Error({ className, errorKey, ...props }: ErrorProps) {
     return null
   }
 
+  console.log('Error:', error)
+
   return (
     <p className={cn('text-red-600 text-sm', className)} {...props}>
       {error}
