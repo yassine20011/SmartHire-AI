@@ -16,17 +16,17 @@ export default class LoginController {
 
     const { email, password, nextPath } = await request.validateUsing(vine.compile(schema))
 
+    console.log('Email:', email)
+    console.log('Password:', password)
+    console.log('Next Path:', nextPath)
+
     try {
       const user = await UserService.verifyCredentials(email, password)
+      console.log('User:', user)
 
       if (!user) {
-        session.flashMessages.set('errors', {
-          email: 'Invalid credentials',
-          password: 'Invalid credentials',
-        })
-        session.flash('flash', 'Invalid credentials')
-
-        return response.redirect().toPath('sign_in')
+        session.flash('flash', 'Credentials do not match')
+        return response.redirect().toPath('/login')
       }
 
       await auth.use('web').login(user)
@@ -37,8 +37,8 @@ export default class LoginController {
 
       return response.redirect().toPath('/')
     } catch {
-      session.flash('flash', 'Invalid credentials')
-      return response.redirect().toPath('sign_in')
+      session.flash('flash', 'Credentials do not match')
+      return response.redirect().toPath('/login')
     }
   }
 }

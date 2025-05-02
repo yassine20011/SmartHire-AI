@@ -1,43 +1,62 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 
-router.on('/').renderInertia('home').use(middleware.guest())
+// Home page
+const HomeController = () => import('#controllers/home_controller')
+router.get('/', [HomeController, 'index']).as('home.index').use(middleware.guest())
 
-const SignUpController = () => import('#controllers/auth/signup_controller')
-router.get('/signup', [SignUpController, 'show']).as('auth.signup.show').use(middleware.guest())
+const SignOutController = () => import('#controllers/auth/sign_outs_controller')
+router.post('/sign_out', [SignOutController, 'handle'])
+
+// Authentication routes
 router
-  .post('/signup', [SignUpController, 'handle'])
-  .as('auth.signup.handle')
-  .use(middleware.guest())
+  .group(() => {
+    const SignUpController = () => import('#controllers/auth/signup_controller')
+    router.get('/signup', [SignUpController, 'show']).as('auth.signup.show')
+    router.post('/signup', [SignUpController, 'handle']).as('auth.signup.handle')
 
-const LoginController = () => import('#controllers/auth/login_controller')
-router.get('/login', [LoginController, 'show']).as('auth.login.show').use(middleware.guest())
-router.post('/login', [LoginController, 'handle']).as('auth.login.handle').use(middleware.guest())
-
-// candidate dashboard
-const DashboardCandidatesController = () => import('#controllers/dashboard/candidates_controller')
+    const LoginController = () => import('#controllers/auth/login_controller')
+    router.get('/login', [LoginController, 'show']).as('auth.login.show')
+    router.post('/login', [LoginController, 'handle']).as('auth.login.handle')
+  })
+// Dashboard routes
 router
-  .get('/dashboard/candidate', [DashboardCandidatesController, 'show'])
-  .as('dashboard.candidates.show')
+  .group(() => {
+    // Candidate dashboard
+    router.group(() => {
+      const DashboardCandidatesController = () =>
+        import('#controllers/dashboard/candidates_controller')
+      router
+        .get('/candidate', [DashboardCandidatesController, 'show'])
+        .as('dashboard.candidates.show')
+        .use(middleware.roleRestriction(['candidate']))
+    })
+
+    // Recruiter dashboard
+    router.group(() => {
+      const DashboardRecruitersController = () =>
+        import('#controllers/dashboard/recruiters_controller')
+      router
+        .get('/recruiter', [DashboardRecruitersController, 'show'])
+        .as('dashboard.recruiters.show')
+        .use(middleware.roleRestriction(['recruiter']))
+    })
+  })
+  .prefix('/dashboard')
   .use(middleware.auth())
-  .use(middleware.roleRestriction(['candidate']))
 
-// recruiter dashboard
-const DashboardRecruitersController = () => import('#controllers/dashboard/recruiters_controller')
+// Features
 router
-  .get('/dashboard/recruiter', [DashboardRecruitersController, 'show'])
-  .as('dashboard.recruiters.show')
-  .use(middleware.auth())
-  .use(middleware.roleRestriction(['recruiter']))
+  .group(() => {
+    // Settings
+    const SettingsController = () => import('#controllers/settings_controller')
+    router.get('/settings', [SettingsController, 'show']).as('settings.show')
 
-// settings
-const SettingsController = () => import('#controllers/settings_controller')
-router.get('/settings', [SettingsController, 'show']).as('settings.show').use(middleware.auth())
-
-// jobs
-const JobsController = () => import('#controllers/jobs_controller')
-router
-  .get('/jobs/new', [JobsController, 'show'])
-  .as('jobs.show')
+    // Jobs management (recruiter only)
+    const JobsController = () => import('#controllers/jobs_controller')
+    router
+      .get('/jobs/new', [JobsController, 'show'])
+      .as('jobs.show')
+      .use(middleware.roleRestriction(['recruiter']))
+  })
   .use(middleware.auth())
-  .use(middleware.roleRestriction(['recruiter']))

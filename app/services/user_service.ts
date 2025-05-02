@@ -11,6 +11,7 @@ export class UserService {
       }
     }
     catch (error) {
+      console.error('Error verifying credentials:', error)
       return null
     }
     return null

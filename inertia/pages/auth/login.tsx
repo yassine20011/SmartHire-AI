@@ -44,7 +44,10 @@ export default function LoginPage() {
 
       // Redirect based on user type (this would normally be determined by the backend)
       // For demo purposes, we'll redirect to candidate dashboard
-      router.visit("/dashboard/candidate")
+      router.post("/login", {
+        ...formData,
+        nextPath: p.nextPath as string,
+      })
 
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -145,7 +148,7 @@ export default function LoginPage() {
                 </Label>
               </div>
 
-              <Error errorKey="auth" />
+              <Error errorKey="flash" />
 
               <Button type="submit" className="w-full">
                 Se connecter
