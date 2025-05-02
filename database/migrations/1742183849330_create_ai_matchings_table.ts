@@ -5,19 +5,19 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('macthing_id').notNullable()
-      table.float('matching_score').notNullable()
-      table.json('recommendation_details').notNullable()
+      table.increments('macthingId').notNullable()
+      table.float('matchingScore').notNullable()
+      table.json('recommendationDetails').notNullable()
 
-      table.integer('job_id').unsigned().references('jobs.job_id').onDelete('CASCADE')
+      table.integer('jobId').unsigned().references('jobs.jobId').onDelete('CASCADE')
       table
-        .integer('candidate_id')
+        .integer('candidateId')
         .unsigned()
-        .references('candidates.candidate_id')
+        .references('candidates.candidateId')
         .onDelete('CASCADE')
 
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.timestamp('createdAt')
+      table.timestamp('updatedAt')
     })
   }
 

@@ -6,12 +6,12 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table
-        .integer('candidate_id')
+        .integer('candidateId')
         .unsigned()
-        .references('candidates.candidate_id')
+        .references('candidates.candidateId')
         .onDelete('CASCADE')
-      table.integer('skill_id').unsigned().references('skills.skill_id').onDelete('CASCADE')
-      table.primary(['candidate_id', 'skill_id'])
+      table.integer('skillId').unsigned().references('skills.skillId').onDelete('CASCADE')
+      table.primary(['candidateId', 'skillId'])
     })
   }
 

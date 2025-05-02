@@ -5,14 +5,14 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('application_id').notNullable()
+      table.increments('applicationId').notNullable()
       table.enum('status', ['pending', 'accepted', 'rejected']).notNullable()
       table.float('score').notNullable()
-      table.text('conver_letter').notNullable()
-      table.integer('job_id').unsigned().references('jobs.job_id').onDelete('CASCADE')
-      table.integer('candidate_id').unsigned().references('candidates.candidate_id').onDelete('CASCADE')
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.text('converLetter').notNullable()
+      table.integer('jobId').unsigned().references('jobs.jobId').onDelete('CASCADE')
+      table.integer('candidateId').unsigned().references('candidates.candidateId').onDelete('CASCADE')
+      table.timestamp('createdAt')
+      table.timestamp('updatedAt')
     })
   }
 

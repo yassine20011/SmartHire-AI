@@ -5,10 +5,10 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('search_log_id').notNullable()
-      table.string('search_query', 255).notNullable()
-      table.json('clicked_job').notNullable()
-      table.integer('user_id').unsigned().references('users.user_id').onDelete('CASCADE')
+      table.increments('searchLogId').notNullable()
+      table.string('searchQuery', 255).notNullable()
+      table.json('clickedJob').notNullable()
+      table.integer('userId').unsigned().references('users.userId').onDelete('CASCADE')
       table.timestamp('timestamp')
     })
   }
