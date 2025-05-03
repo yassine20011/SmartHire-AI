@@ -36,6 +36,9 @@ export default class Job extends BaseModelWithCamelCase {
   @column()
   declare employmentType: string
 
+  @column()
+  declare embedding: string
+
   /**
    * Relationships.
    * */
@@ -69,5 +72,11 @@ export default class Job extends BaseModelWithCamelCase {
 
   getApplications(): Application[] {
     return []
+  }
+
+  public serializeExtras() {
+    return {
+      embedding: JSON.parse(this.$extras.embedding || '[]'),
+    }
   }
 }

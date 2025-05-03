@@ -18,7 +18,7 @@ router
     const LoginController = () => import('#controllers/auth/login_controller')
     router.get('/login', [LoginController, 'show']).as('auth.login.show')
     router.post('/login', [LoginController, 'handle']).as('auth.login.handle')
-  })
+  }).use(middleware.guest())
 // Dashboard routes
 router
   .group(() => {

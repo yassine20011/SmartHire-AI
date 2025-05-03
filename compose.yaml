@@ -1,13 +1,14 @@
 services:
   postgres:
     container_name: smart_hire_postgres
-    image: postgres:17.2
+    image: pgvector/pgvector:pg17
     environment:
       POSTGRES_USER: smarthire
       POSTGRES_PASSWORD: smarthire1234
       POSTGRES_DB: smarthire
     volumes:
       - smart_hire_postgres_data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d
     ports:
       - 5432:5432
     networks:

@@ -34,6 +34,9 @@ export default class Candidate extends BaseModelWithCamelCase {
   declare profileVisibility: boolean
 
   @column()
+  declare embedding: string
+
+  @column()
   declare userId: number
 
   /**
@@ -56,4 +59,11 @@ export default class Candidate extends BaseModelWithCamelCase {
   applyToJob() {}
 
   getMatches() {}
+
+
+  public serializeExtras(){
+    return {
+      embedding: JSON.parse(this.$extras.embedding || '[]'),
+    }
+  }
 }
