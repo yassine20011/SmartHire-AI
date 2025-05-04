@@ -7,6 +7,7 @@ import { Button } from "~/components/ui/button"
 import { Card } from "~/components/ui/card"
 import { Progress } from "~/components/ui/progress"
 import { FileText, Upload, X } from "lucide-react"
+import { router } from "@inertiajs/react"
 
 export function UploadCV() {
   const [file, setFile] = useState<File | null>(null)
@@ -45,18 +46,18 @@ export function UploadCV() {
 
     setIsUploading(true)
     setUploadProgress(0)
-
-    // Simulate upload progress
-    const interval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          setIsUploading(false)
-          return 100
-        }
-        return prev + 10
-      })
-    }, 300)
+    const formData = new FormData()
+    formData.append("resume", file)
+    router.post("/dashboard/candidate/upload_resume", formData, {
+      forceFormData: true,
+      onProgress: (progress: any) => {
+        setUploadProgress(Math.round((progress.loaded / progress.total) * 100))
+      },
+      onFinish: () => {
+        setIsUploading(false)
+        setUploadProgress(100)
+      },
+    })
   }
 
   const handleRemoveFile = () => {

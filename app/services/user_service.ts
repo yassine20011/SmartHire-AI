@@ -34,4 +34,15 @@ export class UserService {
       throw new Error('Error creating user')
     }
   }
+
+  static async updateUser(userId: number, userData: Partial<User>): Promise<User | null> {
+    try {
+      const user = await User.findOrFail(userId)
+      user.merge(userData)
+      await user.save()
+      return user
+    } catch (error) {
+      return null
+    }
+  }
 }

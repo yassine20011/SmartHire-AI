@@ -30,6 +30,18 @@ export default class User extends BaseModelWithCamelCase {
   @column()
   declare role: 'recruiter' | 'candidate'
 
+  @column()
+  declare phone: string | null
+
+  @column()
+  declare location: string | null
+
+  @column()
+  declare bio: string | null
+
+  @column()
+  declare jobTitle: string | null
+
   /**
    * Relationships.
    */

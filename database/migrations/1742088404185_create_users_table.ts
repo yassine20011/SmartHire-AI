@@ -14,6 +14,7 @@ export default class extends BaseSchema {
       table.string('location', 100).nullable()
       table.string('profilePicture').nullable()
       table.string('bio', 500).nullable()
+      table.string('jobTitle', 80).notNullable().defaultTo('Software Engineer')
       table.enu('role', ['recruiter', 'candidate']).notNullable()
       table.timestamp('createdAt').notNullable()
       table.timestamp('updatedAt').nullable()
