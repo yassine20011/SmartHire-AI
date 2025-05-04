@@ -11,6 +11,8 @@ import {Link} from "@inertiajs/react"
 import { JobCard } from "~/components/job_card"
 import { DashboardHeader } from "~/components/dashboard_header"
 import { DashboardShell } from "~/components/dashboard_shell"
+import { usePage } from '@inertiajs/react'
+import UserModel from "#models/user"
 
 // Mock data
 const recommendedJobs = [
@@ -74,11 +76,10 @@ const profileCompleteness = 75
 
 export default function CandidateDashboard() {
   const [activeTab, setActiveTab] = useState("recommended")
-
+  const { user } = usePage().props as { user?: UserModel }
   return (
     <DashboardShell userType="candidate">
       <DashboardHeader heading="Tableau de bord candidat" text="Bienvenue sur votre espace personnel SmartHire AI" />
-
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -129,8 +130,8 @@ export default function CandidateDashboard() {
                 />
               </div>
               <div className="space-y-1 text-center">
-                <h3 className="text-xl font-bold">Thomas Dubois</h3>
-                <p className="text-sm text-muted-foreground">Développeur Full Stack</p>
+                <h3 className="text-xl font-bold">{user?.firstName} {user?.lastName}</h3>
+                <p className="text-sm text-muted-foreground">{user?.jobTitle || "Add your job title from settings"}</p>
               </div>
               <div className="w-full space-y-4">
                 <div className="flex items-center justify-between border-b pb-2">

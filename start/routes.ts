@@ -30,6 +30,7 @@ router
         .get('/candidate', [DashboardCandidatesController, 'show'])
         .as('dashboard.candidates.show')
         .use(middleware.roleRestriction(['candidate']))
+      router.post('/candidate/upload_resume', [DashboardCandidatesController, 'uploadResume'])
     })
 
     // Recruiter dashboard
@@ -51,6 +52,7 @@ router
     // Settings
     const SettingsController = () => import('#controllers/settings_controller')
     router.get('/settings', [SettingsController, 'show']).as('settings.show')
+    router.patch('/settings', [SettingsController, 'patch']).as('settings.patch')
 
     // Jobs management (recruiter only)
     const JobsController = () => import('#controllers/jobs_controller')

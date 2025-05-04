@@ -4,7 +4,6 @@ import { Button } from '~/components/ui/button'
 import { Card } from '~/components/ui/card'
 import { ArrowRight, CheckCircle, Star } from "lucide-react"
 
-
 export default function Home() {
   return (
     <>
