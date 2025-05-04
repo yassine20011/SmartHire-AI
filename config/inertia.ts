@@ -1,5 +1,6 @@
 import { defineConfig } from '@adonisjs/inertia'
 import type { InferSharedProps } from '@adonisjs/inertia/types'
+import { use } from 'react'
 
 const inertiaConfig = defineConfig({
   /**
@@ -12,7 +13,8 @@ const inertiaConfig = defineConfig({
    */
   sharedData: {
     flash: (ctx) => ctx.session?.flashMessages.all(),
-    errors: (ctx) => ctx.inertia.always(() => ctx.session?.flashMessages.get('errors')),
+    user: (ctx) => ctx.auth?.user,
+    errors: (ctx) => ctx.inertia.always(() => ctx.session?.flashMessages.get('error')),
     path: (ctx) => ctx.request.url(),
     query: (ctx) => ctx.request.qs(),
     params: (ctx) => ctx.params,
