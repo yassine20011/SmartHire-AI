@@ -35,7 +35,7 @@ export function DashboardShell({ children, className, userType = "candidate" }: 
               <Link href="/dashboard/candidate" className="text-sm font-medium hover:underline underline-offset-4">
                 Tableau de bord
               </Link>
-              <Link href="/jobs" className="text-sm font-medium hover:underline underline-offset-4">
+              <Link href="/offers" className="text-sm font-medium hover:underline underline-offset-4">
                 Offres
               </Link>
             </>
@@ -44,7 +44,7 @@ export function DashboardShell({ children, className, userType = "candidate" }: 
               <Link href="/dashboard/recruiter" className="text-sm font-medium hover:underline underline-offset-4">
                 Tableau de bord
               </Link>
-              <Link href="/jobs/new" className="text-sm font-medium hover:underline underline-offset-4">
+              <Link href="/offers/new" className="text-sm font-medium hover:underline underline-offset-4">
                 Publier une offre
               </Link>
               <Link href="/candidates" className="text-sm font-medium hover:underline underline-offset-4">

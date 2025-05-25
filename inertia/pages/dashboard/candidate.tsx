@@ -13,43 +13,7 @@ import { DashboardHeader } from "~/components/dashboard_header"
 import { DashboardShell } from "~/components/dashboard_shell"
 import { usePage } from '@inertiajs/react'
 import UserModel from "#models/user"
-
-// Mock data
-const recommendedJobs = [
-  {
-    id: "1",
-    title: "Développeur Frontend React",
-    company: "Tech Solutions",
-    location: "Paris, France",
-    type: "CDI",
-    salary: "45K - 60K €",
-    matchScore: 95,
-    postedAt: "Il y a 2 jours",
-    logo: "https://placehold.co/40x40",
-  },
-  {
-    id: "2",
-    title: "Développeur Full Stack JavaScript",
-    company: "Digital Agency",
-    location: "Lyon, France",
-    type: "CDI",
-    salary: "50K - 65K €",
-    matchScore: 88,
-    postedAt: "Il y a 3 jours",
-    logo: "https://placehold.co/40x40",
-  },
-  {
-    id: "3",
-    title: "Ingénieur Frontend Vue.js",
-    company: "StartupXYZ",
-    location: "Remote",
-    type: "CDI",
-    salary: "40K - 55K €",
-    matchScore: 82,
-    postedAt: "Il y a 1 semaine",
-    logo: "https://placehold.co/40x40",
-  },
-]
+import JobModel from "#models/job"
 
 const applications = [
   {
@@ -76,7 +40,10 @@ const profileCompleteness = 75
 
 export default function CandidateDashboard() {
   const [activeTab, setActiveTab] = useState("recommended")
-  const { user } = usePage().props as { user?: UserModel }
+  const { props } = usePage()
+  const recommendedJobs = props.recommendedJobs as JobModel[]
+  const { user, skills } = usePage().props as { user?: UserModel, skills?: string[] }
+
   return (
     <DashboardShell userType="candidate">
       <DashboardHeader heading="Tableau de bord candidat" text="Bienvenue sur votre espace personnel SmartHire AI" />
@@ -146,7 +113,7 @@ export default function CandidateDashboard() {
                     <MapPin className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm">Localisation</span>
                   </div>
-                  <span className="text-sm font-medium">Paris, France</span>
+                  <span className="text-sm font-medium">{user?.location || "Add your location from settings"}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
@@ -155,11 +122,21 @@ export default function CandidateDashboard() {
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Badge>React</Badge>
-                  <Badge>TypeScript</Badge>
-                  <Badge>Node.js</Badge>
-                  <Badge>Express</Badge>
-                  <Badge>MongoDB</Badge>
+                  {(skills?.length === 0) && (
+                    <Badge variant="outline" className="text-xs font-normal">
+                      Aucune compétence ajoutée
+                    </Badge>
+                  )}
+                  {skills?.slice(0, 20).map((skill, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs font-normal">
+                      {skill}
+                    </Badge>
+                  ))}
+                  {skills && skills.length > 20 && (
+                    <Badge variant="outline" className="text-xs font-normal">
+                      +{skills.length - 20}
+                    </Badge>
+                  )}
                 </div>
               </div>
               <Button className="w-full" asChild>
@@ -182,7 +159,17 @@ export default function CandidateDashboard() {
 
               <TabsContent value="recommended" className="space-y-4">
                 {recommendedJobs.map((job) => (
-                  <JobCard key={job.id} job={job} />
+                  <JobCard key={job.jobId} job={
+                    {
+                      ...job,
+                      matchScore: job.$extras?.matchScore || 0,
+                      recruiter: {
+                        name: job.recruiter?.companyName,
+                        company: job.recruiter?.companyName,
+                        logo: "https://placehold.co/40x40",
+                      }
+                    }
+                  } />
                 ))}
                 <Button variant="outline" className="w-full">
                   Voir plus d'offres

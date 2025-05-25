@@ -8,8 +8,19 @@ import { Card } from "~/components/ui/card"
 import { Progress } from "~/components/ui/progress"
 import { FileText, Upload, X } from "lucide-react"
 import { router } from "@inertiajs/react"
+import { usePage } from "@inertiajs/react"
+import User from "#models/user"
+import { PageProps } from '@inertiajs/core'
+
+type PagePropsWithData = PageProps & {
+  user?: User
+  resumeUrl?: string
+}
 
 export function UploadCV() {
+  const { user, resumeUrl } = usePage<PagePropsWithData>().props
+  console.log("resume", resumeUrl)
+
   const [file, setFile] = useState<File | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
@@ -41,14 +52,15 @@ export function UploadCV() {
     }
   }
 
-  const handleUpload = () => {
+  const handleUpload = (e:any) => {
+    e.preventDefault()
     if (!file) return
 
     setIsUploading(true)
     setUploadProgress(0)
     const formData = new FormData()
     formData.append("resume", file)
-    router.post("/dashboard/candidate/upload_resume", formData, {
+    router.post("/settings", formData, {
       forceFormData: true,
       onProgress: (progress: any) => {
         setUploadProgress(Math.round((progress.loaded / progress.total) * 100))
@@ -72,9 +84,8 @@ export function UploadCV() {
   return (
     <div className="space-y-4">
       <div
-        className={`flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 transition-colors ${
-          isDragging ? "border-primary bg-primary/5" : "border-muted-foreground/25"
-        }`}
+        className={`flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 transition-colors ${isDragging ? "border-primary bg-primary/5" : "border-muted-foreground/25"
+          }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -127,36 +138,29 @@ export function UploadCV() {
             )}
 
             {!isUploading && uploadProgress < 100 && (
-              <Button onClick={handleUpload} className="w-full">
+              <Button onClick={(e) => handleUpload(e)} className="w-full">
                 Télécharger
               </Button>
             )}
 
-            {uploadProgress === 100 && (
-              <div className="flex items-center justify-between rounded-md border p-2">
-                <p className="text-sm text-muted-foreground">Téléchargement terminé</p>
-                <Button variant="ghost" size="sm" onClick={handleRemoveFile}>
-                  Remplacer
-                </Button>
-              </div>
-            )}
+
           </div>
         )}
       </div>
-
-      <div>
+      {resumeUrl != null && (
+        <div>
         <h3 className="text-sm font-medium mb-2">Documents téléchargés</h3>
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <FileText className="h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium">CV_Thomas_Dubois.pdf</p>
+                <p className="text-sm font-medium">{user?.firstName}-{user?.lastName}.pdf</p>
                 <p className="text-xs text-muted-foreground">Téléchargé le 15/03/2023</p>
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => window.open(resumeUrl, "_blank")}>
                 Voir
               </Button>
               <Button variant="ghost" size="sm">
@@ -166,6 +170,7 @@ export function UploadCV() {
           </div>
         </Card>
       </div>
+      )}
     </div>
   )
 }

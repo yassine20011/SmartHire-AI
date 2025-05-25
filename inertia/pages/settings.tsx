@@ -23,8 +23,6 @@ import RootLayout from "~/components/RootLayout"
 export default function SettingsPage() {
 
   const { user, errors } = usePage().props as { user?: User, errors?: Record<string, string> }
-  console.log("User data:", user)
-  console.log("Flash messages:", errors)
   const [activeTab, setActiveTab] = useState("profile")
   const userType = user?.role
 
