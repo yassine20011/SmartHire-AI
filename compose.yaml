@@ -20,10 +20,12 @@ services:
     environment:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: password
-    command: 'minio server /data/minio --console-address ":8900"'
+      MINIO_BROWSER_REDIRECT_URL: "https://localhost:8900"
+      MINIO_SERVER_URL: "https://localhost:9000"
+    command: 'server /data/minio --console-address ":8900" --certs-dir /certs'
     volumes:
       - smart_hire_minio_data:/data
-
+      - ./certs:/certs
     ports:
       - 8900:8900
       - 9000:9000
@@ -39,10 +41,20 @@ services:
     networks:
       - smart_hire_network
 
+  redis:
+    container_name: smart_hire_redis
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - smart_hire_redis_data:/data
+    networks:
+      - smart_hire_network
+
 volumes:
   smart_hire_postgres_data:
   smart_hire_minio_data:
-
+  smart_hire_redis_data:
 
 networks:
   smart_hire_network:
