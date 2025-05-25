@@ -8,9 +8,8 @@ export default class extends BaseSchema {
       table.increments('candidateId').notNullable()
       table.string('resumeUrl', 80)
       table.integer('experienceYears')
-      table.string('desiredPosition', 80)
       table.boolean('profileVisibility')
-
+      table.json('parsedResume')
       table.integer('userId').unsigned().references('users.userId').onDelete('CASCADE')
 
       table.timestamp('createdAt')
