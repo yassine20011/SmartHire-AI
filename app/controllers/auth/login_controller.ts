@@ -16,10 +16,6 @@ export default class LoginController {
 
     const { email, password, nextPath } = await request.validateUsing(vine.compile(schema))
 
-    console.log('Email:', email)
-    console.log('Password:', password)
-    console.log('Next Path:', nextPath)
-
     try {
       const user = await UserService.verifyCredentials(email, password)
       console.log('User:', user)

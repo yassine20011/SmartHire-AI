@@ -7,6 +7,10 @@ import { DateTime } from 'luxon'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import BaseModelWithCamelCase from './baseModel.js'
 
+type requiredSkillsType = Record<string, string> & {
+  [key: string]: string
+}
+
 export default class Job extends BaseModelWithCamelCase {
   /**
    * Attributes.
@@ -22,7 +26,7 @@ export default class Job extends BaseModelWithCamelCase {
   declare description: string
 
   @column()
-  declare requiredSkills: object
+  declare requiredSkills: string
 
   @column()
   declare location: string
@@ -35,6 +39,9 @@ export default class Job extends BaseModelWithCamelCase {
 
   @column()
   declare employmentType: string
+
+  @column()
+  declare recruiterId: number
 
   @column()
   declare embedding: string

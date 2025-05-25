@@ -1,49 +1,46 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import vine from '@vinejs/vine'
-import drive from '@adonisjs/drive/services/main'
-import { cuid } from '@adonisjs/core/helpers'
-
+import { CandidateService } from '#services/candidate_service'
+import { JobService } from '#services/job_service'
 export default class DashboardCandidatesController {
 
-  async show({ inertia }: HttpContext) {
-    return inertia.render('dashboard/candidate', {
-      title: 'Candidates'
-    })
-  }
-
-  async uploadResume({ auth, request, response, session }: HttpContext)
-  {
+  async show({ inertia, auth }: HttpContext) {
     const user = auth.user
 
     if (!user) {
-      return response.status(401).json({ message: 'Unauthorized' })
+      // If no user is authenticated, render the page without recommended jobs
+      return inertia.render('dashboard/candidate', {
+        title: 'Candidates',
+        skills: []
+      })
     }
 
-    const schema = vine.object({
-      resume: vine.file({
-        size: '5mb',
-        extnames: ['pdf', 'doc', 'docx'],
-      }),
-    })
+    const skills = await CandidateService.getSkills(user.userId)
+    const candidate = await CandidateService.getCandidateByuserId(user.userId)
 
-    const validator = vine.compile(schema)
+    if (!candidate) {
+      console.error(`No candidate found for user ID: ${user.userId}`)
+      return inertia.render('dashboard/candidate', {
+        title: 'Candidates',
+        skills: skills,
+        recommendedJobs: []
+      })
+    }
 
-    const payload = await request.validateUsing(validator)
+    console.log(`Found candidate with ID: ${candidate.candidateId} for user: ${user.userId}`)
 
-    const resume = payload.resume
-    const fileName = `${user.userId}-${cuid()}.${resume.extname}`
-    const filePath = `resumes/${fileName}`
-    await drive.use('s3').put(filePath, resume.tmpPath!, {
-      contentType: resume.type,
-      visibility: 'public',
-    })
+    // Get recommended jobs using the candidate's ID, not the user ID
+    const jobs = await JobService.getRecommendedJobs(candidate, 3)
 
-    session.flash('success', 'Resume uploaded successfully')
-    return response.status(200).json({
-      message: 'Resume uploaded successfully',
-      filePath: filePath,
+    // Log for debugging
+    console.log(`Recommended jobs count: ${jobs.length}`)
+    if (jobs.length === 0) {
+      console.log('No recommended jobs found, check embeddings in database')
+    }
+
+    return inertia.render('dashboard/candidate', {
+      title: 'Candidates',
+      skills: skills,
+      recommendedJobs: jobs
     })
   }
-
-
 }

@@ -5,12 +5,19 @@ import AiMatching from '#models/ai_matching'
 import Application from '#models/application'
 import Skill from '#models/skill'
 import BaseModelWithCamelCase from './baseModel.js'
+import { DateTime } from 'luxon'
 
-interface DesiredPosition {
-  title: string
-  location: string
-  salary_range: string
+
+
+type Resume = {
+  summary: string,
+  assessment: string,
+  score: number,
+  is_cv: boolean,
+  skills: any[],
+  experience: any[],
 }
+
 
 export default class Candidate extends BaseModelWithCamelCase {
 
@@ -28,7 +35,7 @@ export default class Candidate extends BaseModelWithCamelCase {
   declare experienceYears: number
 
   @column()
-  declare desiredPosition: DesiredPosition
+  declare parsedResume: Resume
 
   @column()
   declare profileVisibility: boolean
@@ -38,6 +45,15 @@ export default class Candidate extends BaseModelWithCamelCase {
 
   @column()
   declare userId: number
+
+  /**
+   * Timestamps.
+   */
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
 
   /**
    * Relationships.
@@ -59,6 +75,7 @@ export default class Candidate extends BaseModelWithCamelCase {
   applyToJob() {}
 
   getMatches() {}
+
 
 
   public serializeExtras(){
